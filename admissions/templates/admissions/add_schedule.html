@@ -1,0 +1,32 @@
+{% extends 'admissions/base.html' %}
+{% block title %}Add Course Schedule{% endblock %}
+{% block content %}
+<div class="card mx-auto p-4" style="max-width: 500px;">
+  <h4 class="text-center mb-3">Add Course Schedule</h4>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>Select Course</label>
+      <select class="form-select" name="course" required>
+        <option value="">-- Select a Course --</option>
+        {% for c in courses %}
+          <option value="{{ c.id }}">{{ c.course_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label>Start Date</label>
+      <input type="date" class="form-control" name="start_date" required>
+    </div>
+    <div class="mb-3">
+      <label>End Date</label>
+      <input type="date" class="form-control" name="end_date" required>
+    </div>
+    <div class="mb-3">
+      <label>Instructor Name</label>
+      <input type="text" class="form-control" name="instructor_name" required>
+    </div>
+    <button class="btn btn-success w-100">Add Schedule</button>
+  </form>
+</div>
+{% endblock %}

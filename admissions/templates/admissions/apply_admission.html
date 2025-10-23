@@ -1,0 +1,30 @@
+{% extends 'admissions/base.html' %}
+{% block title %}Apply for Admission{% endblock %}
+{% block content %}
+<h3>Apply for Admission</h3>
+<p>Welcome, <strong>{{ student.full_name }}</strong></p>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label>Course</label>
+    <select class="form-select" name="course" required>
+      {% for c in courses %}
+      <option value="{{ c.id }}">{{ c.course_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label>Date of Birth</label>
+    <input type="date" class="form-control" name="dob" required>
+  </div>
+  <div class="mb-3">
+    <label>Upload Transcript (Optional)</label>
+    <input type="file" class="form-control" name="transcript">
+  </div>
+  <button class="btn btn-success">Submit Application</button>
+</form>
+{% for message in messages %}
+<div class="alert alert-success mt-3">{{ message }}</div>
+{% endfor %}
+<a href="/check-status/" class="btn btn-link mt-3">Check Status</a>
+{% endblock %}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Course</title>
+</head>
+<body>
+<h2>Edit Course</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label>Course Name:</label><br>
+    <input type="text" name="course_name" value="{{ course.course_name }}" required><br><br>
+
+    <label>Department:</label><br>
+    <input type="text" name="department" value="{{ course.department }}" required><br><br>
+
+    <label>Duration:</label><br>
+    <input type="text" name="duration" value="{{ course.duration }}" required><br><br>
+
+    <label>Description:</label><br>
+    <textarea name="description">{{ course.description }}</textarea><br><br>
+
+    <button type="submit">Save Changes</button>
+</form>
+</body>
+</html>

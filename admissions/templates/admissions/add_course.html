@@ -1,0 +1,27 @@
+{% extends 'admissions/base.html' %}
+{% block title %}Add Course{% endblock %}
+{% block content %}
+<div class="card mx-auto p-4" style="max-width: 500px;">
+  <h4 class="text-center mb-3">Add Course</h4>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>Course Name</label>
+      <input type="text" class="form-control" name="course_name" required>
+    </div>
+    <div class="mb-3">
+      <label>Department</label>
+      <input type="text" class="form-control" name="department" required>
+    </div>
+    <div class="mb-3">
+      <label>Duration</label>
+      <input type="text" class="form-control" name="duration" required>
+    </div>
+    <div class="mb-3">
+      <label>Description</label>
+      <textarea class="form-control" name="description" placeholder="Optional"></textarea>
+    </div>
+    <button class="btn btn-primary w-100">Add Course</button>
+  </form>
+</div>
+{% endblock %}

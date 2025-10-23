@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login | College Admissions Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #00b09b, #96c93d);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            background-color: white;
+            color: #027a3b;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .home-btn:hover {
+            background-color: #027a3b;
+            color: white;
+        }
+
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            color: #027a3b;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #027a3b;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #015c2d;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ Home Button -->
+    <a href="/" class="home-btn">🏠 Home</a>
+
+    <div class="login-box">
+        <h2>Student Login</h2>
+        {% if messages %}
+            <div class="error">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <label>Email</label>
+            <input type="email" name="email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Login</button>
+            <div style="text-align:center; margin-top:10px;">
+    <a href="{% url 'forgot_password' %}" style="color:#0072ff; text-decoration:none;">
+        Forgot Password?
+    </a>
+</div>
+
+        </form>
+    </div>
+
+    <!-- ✅ Prevent back navigation after logout -->
+    <script>
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function () {
+                window.location.replace('/student-login/');
+            };
+        }
+    </script>
+
+</body>
+</html>

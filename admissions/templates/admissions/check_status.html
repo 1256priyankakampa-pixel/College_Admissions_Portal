@@ -1,0 +1,23 @@
+{% extends 'admissions/base.html' %}
+{% block title %}Check Status{% endblock %}
+{% block content %}
+<h3>Application Status</h3>
+{% if application %}
+  <div class="card p-3">
+    <p><strong>Name:</strong> {{ student.full_name }}</p>
+    <p><strong>Course:</strong> {{ application.course.course_name }}</p>
+    <p><strong>Status:</strong> {{ application.status }}</p>
+    {% if application.status == 'Approved' %}
+      <a href="/view-schedule/" class="btn btn-primary">View Course Schedule</a>
+    {% elif application.status == 'Rejected' %}
+      <div class="alert alert-danger mt-2">No records due to rejection.</div>
+    {% else %}
+      <div class="alert alert-warning mt-2">Your application is still pending review.</div>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="alert alert-info">You have not applied for any course yet.</div>
+{% endif %}
+<br>
+<a href="/apply-admission/" class="btn btn-outline-primary">Apply Again</a>
+{% endblock %}

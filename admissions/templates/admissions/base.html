@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}College Admissions Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- ✅ NAVBAR START -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">College Admissions</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+        {% if request.session.student_id %}
+          <!-- 👩‍🎓 Student Logged In -->
+          <li class="nav-item"><a class="nav-link" href="{% url 'apply_admission' %}">Apply</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'check_status' %}">Status</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'view_schedule' %}">Schedule</a></li>
+          <li class="nav-item"><a class="nav-link text-warning" href="{% url 'student_logout' %}">Logout</a></li>
+
+        {% elif user.is_authenticated and user.is_staff %}
+          <!-- 👨‍💼 Admin Logged In -->
+          <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link text-warning" href="/admin/logout/">Logout</a></li>
+
+        {% else %}
+          <!-- 🌐 Public View -->
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'student_login' %}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'student_register' %}">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        {% endif %}
+
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- ✅ NAVBAR END -->
+
+<div class="container my-5">
+  {% block content %}{% endblock %}
+</div>
+
+<footer class="bg-dark text-white text-center py-3">
+    © 2025 College Admissions Portal | All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ✅ SWEETALERT2 TOASTS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  {% if messages %}
+    {% for message in messages %}
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" %}error{% elif message.tags == "warning" %}warning{% else %}info{% endif %}',
+        title: '{{ message }}',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    {% endfor %}
+  {% endif %}
+</script>
+
+</body>
+</html>

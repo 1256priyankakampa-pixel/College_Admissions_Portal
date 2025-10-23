@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f0f4ff;
+            margin: 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #004aad;
+            color: white;
+            padding: 15px 40px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+        header a {
+            background-color: #ff3b3b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        header a:hover {
+            background-color: #d62c2c;
+        }
+        .container {
+            width: 90%;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #004aad;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #004aad;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f6ff;
+        }
+        .btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .approve { background-color: #28a745; }
+        .reject { background-color: #dc3545; }
+        .delete { background-color: #ff6600; }
+        .add-btn {
+            display: inline-block;
+            background-color: #004aad;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .add-btn:hover {
+            background-color: #003580;
+        }
+        .section {
+            margin-top: 40px;
+        }
+        .center {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Dashboard</h1>
+    <a href="/admin-logout/">Logout</a>
+</header>
+
+<div class="container">
+
+    <!-- APPLICATIONS LIST -->
+    <h2>Applications List</h2>
+    <!-- ✅ Date Filter Form -->
+<form method="get" style="text-align: center; margin-bottom: 20px;">
+    <label for="start_date" style="color:#004aad; font-weight:bold;">From:</label>
+    <input type="date" name="start_date" id="start_date" value="{{ start_date|default_if_none:'' }}"
+           style="padding:5px; border:1px solid #ccc; border-radius:5px;">
+
+    <label for="end_date" style="color:#004aad; font-weight:bold; margin-left:10px;">To:</label>
+    <input type="date" name="end_date" id="end_date" value="{{ end_date|default_if_none:'' }}"
+           style="padding:5px; border:1px solid #ccc; border-radius:5px;">
+
+    <button type="submit" style="background-color:#004aad; color:white; border:none; padding:6px 15px; border-radius:5px; margin-left:10px; cursor:pointer;">
+        Filter
+    </button>
+
+    <a href="/portal-admin/dashboard/" style="background-color:#888; color:white; padding:6px 12px; border-radius:5px; text-decoration:none; margin-left:5px;">
+        Reset
+    </a>
+</form>
+    <table>
+        <tr>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Applied Date</th>
+            <th>Transcript</th>
+            <th>Actions</th>
+        </tr>
+        {% for app in applications %}
+        <tr id="row-{{ app.id }}">
+            <td>{{ app.student.full_name }}</td>
+            <td>{{ app.course.course_name }}</td>
+            <td class="status">{{ app.status }}</td>
+            <td>{{ app.applied_date|date:"Y-m-d" }}</td>
+            <td>
+                {% if app.transcript %}
+                    <a href="{{ app.transcript.url }}" target="_blank">View Transcript</a>
+                {% else %}
+                    No File
+                {% endif %}
+            </td>
+            <td class="actions">
+                {% if app.status == "Pending" %}
+                    <button class="btn approve" onclick="approveApplication('{{ app.id }}')">Approve</button>
+                    <button class="btn reject" onclick="rejectApplication('{{ app.id }}')">Reject</button>
+                {% else %}
+                    <span>{{ app.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="center">No applications found.</td></tr>
+        {% endfor %}
+    </table>
+
+    <div class="center">
+        <button class="btn delete" onclick="deleteRejected()">Delete All Rejected Applications</button>
+    </div>
+
+    <!-- ADD COURSE SECTION -->
+    <div class="section">
+        <h2>Courses</h2>
+        <a href="/add-course/" class="add-btn">Add Course</a>
+        <table>
+            <tr>
+                <th>Course Name</th>
+                <th>Department</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.course_name }}</td>
+                <td>{{ course.department }}</td>
+                <td>{{ course.duration }}</td>
+                <td>
+                    <a href="/edit-course/{{ course.id }}/" class="btn approve">Edit</a>
+                    <a href="/delete-course/{{ course.id }}/" class="btn reject" onclick="return confirm('Delete this course?')">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="center">No courses added yet.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- ADD SCHEDULE SECTION -->
+    <div class="section">
+        <h2>Course Schedules</h2>
+        <a href="/add-schedule/" class="add-btn">Add Schedule</a>
+        <table>
+            <tr>
+                <th>Course</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Instructor</th>
+                <th>Actions</th>
+            </tr>
+            {% for s in schedules %}
+            <tr>
+                <td>{{ s.course.course_name }}</td>
+                <td>{{ s.start_date }}</td>
+                <td>{{ s.end_date }}</td>
+                <td>{{ s.instructor_name }}</td>
+                <td>
+                    <a href="/edit-schedule/{{ s.id }}/" class="btn approve">Edit</a>
+                    <a href="/delete-schedule/{{ s.id }}/" class="btn reject" onclick="return confirm('Delete this schedule?')">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="center">No schedules found.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<!-- ✅ JavaScript for AJAX Approve / Reject / Delete -->
+<script>
+function approveApplication(id) {
+    fetch(`/portal-admin/approve_application/${id}/`)
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            const row = document.querySelector(`#row-${id}`);
+            if (row) {
+                row.querySelector('.status').innerText = 'Approved';
+                row.querySelector('.actions').innerHTML = '<span>Approved</span>';
+            }
+        });
+}
+
+function rejectApplication(id) {
+    fetch(`/portal-admin/reject_application/${id}/`)
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            const row = document.querySelector(`#row-${id}`);
+            if (row) {
+                row.querySelector('.status').innerText = 'Rejected';
+                row.querySelector('.actions').innerHTML = '<span>Rejected</span>';
+            }
+        });
+}
+
+function deleteRejected() {
+    fetch('/portal-admin/delete_rejected/')
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.querySelectorAll('tr').forEach(tr => {
+                const statusCell = tr.querySelector('.status');
+                if (statusCell && statusCell.innerText === 'Rejected') {
+                    tr.remove();
+                }
+            });
+        });
+}
+</script>
+
+</body>
+</html>

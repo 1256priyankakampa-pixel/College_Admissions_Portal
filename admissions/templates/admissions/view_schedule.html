@@ -1,0 +1,31 @@
+{% extends 'admissions/base.html' %}
+{% block title %}Course Schedule{% endblock %}
+{% block content %}
+<h3>Course Schedule</h3>
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% else %}
+  <div class="card p-3">
+    <p><strong>Course:</strong> {{ course.course_name }}</p>
+    <table class="table table-bordered mt-3">
+      <thead class="table-secondary">
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Instructor</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in schedules %}
+        <tr>
+          <td>{{ s.start_date }}</td>
+          <td>{{ s.end_date }}</td>
+          <td>{{ s.instructor_name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+<a href="/check-status/" class="btn btn-outline-primary mt-3">Back to Status</a>
+{% endblock %}

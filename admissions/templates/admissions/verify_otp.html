@@ -1,0 +1,29 @@
+{% extends 'admissions/base.html' %}
+{% block title %}Verify OTP{% endblock %}
+{% block content %}
+<div class="card mx-auto p-4" style="max-width: 400px;">
+  <h3 class="text-center mb-3">Verify OTP</h3>
+  <p class="text-muted text-center">Check your console for the OTP .</p>
+  <form method="POST">
+    {% csrf_token %}
+
+     <!-- ✅ Hidden email field (must be added just after csrf_token) -->
+    <input type="hidden" name="email" value="{{ request.GET.email }}">
+
+
+    <div class="mb-3">
+      <label>Enter OTP</label>
+      <input type="text" class="form-control" name="otp" required>
+    </div>
+
+
+    <div class="mb-3">
+      <label>Set Password</label>
+      <input type="password" class="form-control" name="password" required>
+    </div>
+    
+    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+    <button class="btn btn-success w-100">Verify & Register</button>
+  </form>
+</div>
+{% endblock %}
