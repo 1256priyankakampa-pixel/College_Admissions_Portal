@@ -5,7 +5,9 @@ Students can register, apply for courses, upload transcripts, and check their st
 Admins can review, approve/reject applications, and manage courses/schedules.
 
 ---
+![Home Page Screenshot](static/images/Screenshot_23-10-2025_123822_127.0.0.1.jpeg)
 
+---
 ## 🏫 Features
 
 ### 👩‍🎓 Student Side
